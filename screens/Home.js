@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import CustomFlatList from './components/CustomFlatList';
 import LocationForm from './components/LocationForm';
 
-export default function App() {
+export default function Home() {
 
   const [currentCoords, setCurrentCoords] = useState(null);
 
