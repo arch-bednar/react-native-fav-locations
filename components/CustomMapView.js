@@ -7,7 +7,7 @@ import { AntDesign } from '@expo/vector-icons';
 //import Icon from 'react-native-vector-icons';
 //import Icon from 'react-native-vector-icons/AntDesign';
 
-export default function CustomMapView({style, onPinChange}) {
+export default function CustomMapView({style, onPinChange, navigation}) {
 
     //lista pinów 
     const [markers, setMarkers] = useState([]);
@@ -62,7 +62,12 @@ export default function CustomMapView({style, onPinChange}) {
                     ></Marker>
                 ))}
             </MapView>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity 
+                style={styles.button}
+                onPress={() => {
+                    navigation.navigate('Edit')
+                }}
+            >
                 <AntDesign name="pluscircle" size={60}/>
             </TouchableOpacity>
             {/* <Text>

@@ -1,7 +1,7 @@
 import {Text, TextInput, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
 import React from 'react';
 
-export default function LocationForm({style}){
+export default function LocationForm({style, navigation}){
     return(    
         <View style={[styles.form, style]}>
             <Text style={styles.title}>Edycja lokalizacji</Text>
@@ -9,7 +9,12 @@ export default function LocationForm({style}){
             <TextInput style={[styles.textbox]} keyboardType='numeric' placeholder='Longitude'></TextInput>
             <TextInput style={styles.textbox} keyboardType='numeric' placeholder='Latitude'></TextInput>
             {/* <Button style={styles.savebutton} title='Zapisz'/> */}
-            <TouchableOpacity style={styles.savebutton}>
+            <TouchableOpacity 
+                style={styles.savebutton}
+                onPress={()=>{
+                    navigation.goBack();
+                }}
+            >
                 <Text style={styles.text}>Zapisz</Text>
             </TouchableOpacity>
         </View>

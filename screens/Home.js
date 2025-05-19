@@ -2,42 +2,42 @@ import { StatusBar } from 'expo-status-bar';
 import { FlatList, StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native';
 import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 //import MapView, {Marker} from 'react-native-maps';
-import CustomMapView from './components/CustomMapView'
+import CustomMapView from '../components/CustomMapView'
 //import { TextInput } from 'react-native-web';
 import React, { useState } from 'react';
-import CustomFlatList from './components/CustomFlatList';
-import LocationForm from './components/LocationForm';
+import CustomFlatList from '../components/CustomFlatList';
+import LocationForm from '../components/LocationForm';
 
-export default function Home() {
+export default function Home({navigation}) {
 
   const [currentCoords, setCurrentCoords] = useState(null);
 
-  // return (
-  //   <SafeAreaProvider style={[styles.main_container, styles.background]}>
-  //     <StatusBar style="auto" />
-  //     <View style={[styles.container, styles.background]}>
-  //       <Text style={styles.textIntroduction}>Moje ulubione miejsca</Text>
-  //       <CustomMapView style={styles.mapContainer} onPinChange={setCurrentCoords} ></CustomMapView>
+  return (
+    <SafeAreaProvider style={[styles.main_container, styles.background]}>
+      <StatusBar style="auto" />
+      <View style={[styles.container, styles.background]}>
+        <Text style={styles.textIntroduction}>Moje ulubione miejsca</Text>
+        <CustomMapView style={styles.mapContainer} onPinChange={setCurrentCoords} navigation={navigation}></CustomMapView>
 
-  //       {/* <View style={styles.form}> */}
-  //         {/* <Text> Nazwa</Text>
-  //         <TextInput style={ styles.textinput } editable />
-  //         <Text>{currentCoords ? `${currentCoords.longitude} ${currentCoords.latitude}`: ``}
-  //         </Text> */}
-  //       {/* </View> */}
-  //     </View>
-  //     <View style={[styles.listPanel,  ]}>
-  //       <CustomFlatList style={styles.list}/>
-  //     </View>
+        {/* <View style={styles.form}> */}
+          {/* <Text> Nazwa</Text>
+          <TextInput style={ styles.textinput } editable />
+          <Text>{currentCoords ? `${currentCoords.longitude} ${currentCoords.latitude}`: ``}
+          </Text> */}
+        {/* </View> */}
+      </View>
+      <View style={[styles.listPanel,  ]}>
+        <CustomFlatList style={styles.list}/>
+      </View>
       
-  //     {/* <Button title="siema"/> */}
+      {/* <Button title="siema"/> */}
 
-  //   </SafeAreaProvider>
-  // );
-
-  return(
-    <LocationForm style={styles.background}/>
+    </SafeAreaProvider>
   );
+
+//   return(
+//     <LocationForm style={styles.background}/>
+//   );
 }
 
 function onPress(){
