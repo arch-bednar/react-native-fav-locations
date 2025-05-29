@@ -1,47 +1,53 @@
 import {FlatList, View, Text, StyleSheet} from 'react-native';
-import { Ionicons, Entypo, Octicons } from '@expo/vector-icons';
+import { Octicons } from '@expo/vector-icons';
 import { TouchableOpacity } from 'react-native';
+import CheckBox from 'expo-checkbox';
 
-export default function CustomFlatList({style}) {
 
-    const data = [
-                { key: "1", name: "blablabla"}, 
-                {key: "2", name:"xxxxx"}, 
-                {key: "3", name:"wwwwwwww"},
-                {key: "4", name:"ceafrsgrsg"},
-                {key: "5", name: "deaftgdt"},
-                {key: "6", name: "dsfghjk"},
-                {key: "7", name: "jhgfds"},
-                {key: "8", name: "hytgfrdc"},
-                {key: "(", name: "hytgfrdc"},
-                {key: "x", name: "hytgfrdc"},
-                {key: "w", name: "hytgfrdc"}
-            ]
+export default function CustomFlatList({style, locations, setLocations, navigation}) {
 
-    const listHeader = () => <Text>Lista zapisanych lokalizacji</Text>;
+    function deleteFunction(key){       
+      setLocations((prev) => prev.filter(item => item.key != key))
+    }
  
+    function editPosition(key){
+      console.log('editposition ' + key)
+      navigation.navigate('EditForm', {klucz: key});
+    }
+
+    function showHidePin(key, val){
+      console.log('val: ' + val)
+      setLocations(prev => prev.map(item => item.key === key ? {...item, visible: val} : item));
+    }
+
     return(
         <View style={[style, styles.view, styles.view_shape]}>
           <Text style={styles.header}>Lista zapisanych lokalizacji</Text>
         <FlatList //style={styles.list_shape} 
                   style={[styles.list_shape]}
-                  data={data} 
+                  data={locations} 
                   keyExtractor={(item) => item.key }
                   //ListHeaderComponent={listHeader} 
                 renderItem={ ({item}) => (
                     <View style={styles.item}>
-                        <Text style={styles.text}>{item.name}</Text>
-                        <TouchableOpacity style={[styles.touchableButton]}>
-                          {/* <Ionicons style={styles.icon} size={40} name="trash"></Ionicons> */}
+                        <View style={styles.text}>
+                          <Text style={styles.name}>{item.name}</Text>
+                          <Text style={styles.coordinates}>({item.latitude}, {item.longitude})</Text>
+                        </View>
+                        <View>
+                          <CheckBox desabled={false} style={styles.checkbox} value={item.visible} onValueChange={(val) => showHidePin(item.key, val)}></CheckBox>
+                        </View>
+                        <TouchableOpacity style={[styles.touchableButton]}
+                                          onPress={() => deleteFunction(item.key)}
+                        >
                           <Octicons style={[styles.icon]} size={40} name="trash"/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.touchableButton}>
-                          {/* <Entypo style={styles.icon} size={40} name="pencil"/> */}
+                        <TouchableOpacity style={styles.touchableButton}
+                                          onPress={() => editPosition(item.key)}
+                        >
                           <Octicons  size={40} name="pencil"/>
                         </TouchableOpacity>
-                       
                     </View>
-
                 )}
         />
         </View>
@@ -129,12 +135,18 @@ const styles = StyleSheet.create({
       marginRight: '2%',
 
     },
-    iconTrash: {
-
+    checkbox: {
+      marginRight: '2%',
     },
     header:{
       marginBottom: '5%',
       marginTop: '5%',
+      fontSize: 20
+    },
+    coordinates: {
+      color: 'gray'
+    },
+    name: {
       fontSize: 20
     }
 

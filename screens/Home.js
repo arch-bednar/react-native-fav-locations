@@ -1,14 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
-import { FlatList, StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native';
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { StyleSheet, Text, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 //import MapView, {Marker} from 'react-native-maps';
 import CustomMapView from '../components/CustomMapView'
 //import { TextInput } from 'react-native-web';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import CustomFlatList from '../components/CustomFlatList';
-import LocationForm from '../components/LocationForm';
 
-export default function Home({navigation}) {
+
+export default function Home({navigation, locations, setLocations}) {
 
   const [currentCoords, setCurrentCoords] = useState(null);
 
@@ -17,7 +17,13 @@ export default function Home({navigation}) {
       <StatusBar style="auto" />
       <View style={[styles.container, styles.background]}>
         <Text style={styles.textIntroduction}>Moje ulubione miejsca</Text>
-        <CustomMapView style={styles.mapContainer} onPinChange={setCurrentCoords} navigation={navigation}></CustomMapView>
+        <CustomMapView 
+                      style={styles.mapContainer} 
+                      onPinChange={setCurrentCoords} 
+                      navigation={navigation}
+                      locations={locations}
+                      setLocations={setLocations}
+        ></CustomMapView>
 
         {/* <View style={styles.form}> */}
           {/* <Text> Nazwa</Text>
@@ -27,7 +33,7 @@ export default function Home({navigation}) {
         {/* </View> */}
       </View>
       <View style={[styles.listPanel,  ]}>
-        <CustomFlatList style={styles.list}/>
+        <CustomFlatList style={styles.list} locations={locations} setLocations={setLocations} navigation={navigation}/>
       </View>
       
       {/* <Button title="siema"/> */}
@@ -114,6 +120,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginLeft: '1px',
     marginRight: '1px',
+    marginBottom: '12%'
   },
   textIntroduction: {
     fontSize: 30,

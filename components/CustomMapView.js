@@ -1,34 +1,30 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import MapView,{ Marker } from 'react-native-maps';
-import { StyleSheet, View, Text, TouchableOpacity } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { AntDesign } from '@expo/vector-icons';
+import Dialog from 'react-native-dialog';
 
-//import Icon from 'react-native-vector-icons';
-//import Icon from 'react-native-vector-icons/AntDesign';
-
-export default function CustomMapView({style, onPinChange, navigation}) {
+export default function CustomMapView({style, onPinChange, navigation, locations, setLocations}) {
 
     //lista pinów 
     const [markers, setMarkers] = useState([]);
     const [currentPin, setCurrentPin] = useState(null);
+    const [visible, setVisible] = useState(false);
 
     //zwraca koordynaty domyślnego pinu
     function returnPinCords(){
         if (currentPin == null){
-            return ''
+            return '';
         }else{
-            return currentPin.coordinate
+            return currentPin.coordinate;
         }
     }
 
     function handleMapPress(event){
         const coordinate = event.nativeEvent.coordinate;
-        const key = Date.now().toString()
-        const newMarker = {coordinate, key} 
-        //setMarkers(coordinate);
-        //setMarkers((prev) => [...prev, {coordinate}]);
-        setMarkers((prev) => [...prev, newMarker]);
+        // const key = Date.now().toString()
+        // const newMarker = {coordinate, key} 
+        // setMarkers((prev) => [...prev, newMarker]);
         setCurrentPin(coordinate);
 
         if (onPinChange){
@@ -36,36 +32,44 @@ export default function CustomMapView({style, onPinChange, navigation}) {
         }
     }
 
+    function showDialog(){
+        setVisible(true);
+    }
 
+    function closeDialog(){
+        setVisible(false);
+    }
 
     return(
         <View style={[styles.container, style]}>
+            <Dialog.Container visible={visible}>
+                <Dialog.Title>Pusty tekst</Dialog.Title>
+                <Dialog.Description>Nie zaznaczono lokalizacji na mapie!</Dialog.Description>
+                <Dialog.Button label="OK" onPress={closeDialog}/>
+            </Dialog.Container>
             <MapView style={styles.map}
-                
-                // onPress={(event) => {
-                //     const coordinate = event.nativeEvent.coordinate;
-                //     //setMarkers(coordinate);
-                //     setMarkers((prev) => [...prev, {coordinate}]);
-                //     setCurrentPin(coordinate);
-                // }}
                 onPress={handleMapPress}
             >
                 {currentPin && (<Marker coordinate={currentPin}/>)}
-                {markers.map((marker) => (
+                {locations.filter(marker => marker.visible === true).map((marker) => (
                     <Marker
-                        coordinate={marker.coordinate}
+                        coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
                         pinColor='green'
-                        key={marker.key}
-                        // coordinate={coordinate}
-                        // pinColor='green'
-                        // key={key}
-                    ></Marker>
+                        key={locations.key}
+                        visible={marker.visible}
+                    ></Marker> 
                 ))}
             </MapView>
             <TouchableOpacity 
                 style={styles.button}
                 onPress={() => {
-                    navigation.navigate('Edit')
+                    if (currentPin){
+                        navigation.navigate('Form', {longitude: currentPin.longitude, latitude: currentPin.latitude})
+                        setCurrentPin(null);
+                    }else{
+                        showDialog();
+                    }
+
                 }}
             >
                 <AntDesign name="pluscircle" size={60}/>
@@ -116,6 +120,5 @@ const styles = StyleSheet.create({
         // borderWidth: 1
         // borderWidth: 1,
         // borderRadius: 30
-        
     }
 });

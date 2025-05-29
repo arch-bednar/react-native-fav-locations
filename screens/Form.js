@@ -1,7 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import { FlatList, StyleSheet, Text, View, TextInput, Button, TouchableOpacity } from 'react-native';
-import { SafeAreaProvider, SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 import LocationForm from '../components/LocationForm';
 
 
