@@ -4,9 +4,25 @@ import { TouchableOpacity } from 'react-native';
 import CheckBox from 'expo-checkbox';
 
 
-export default function CustomFlatList({style, locations, setLocations, navigation}) {
+export default function CustomFlatList({style, locations, setLocations, navigation, database}) {
 
-    function deleteFunction(key){       
+    function deleteFunction(key){    
+
+      let v_id = -1;
+      locations.forEach(row => {
+        if (row.key === key)
+          v_id = row.id
+      })
+      console.log(v_id);
+      console.log(typeof v_id);
+      try{
+        database.execSync(`DELETE FROM locations WHERE id=${v_id}`, null);
+      } catch(error){
+          console.error('Błąd w transakcji – wykonano rollback:', err);
+      }
+
+      const remaining = database.getAllSync('SELECT id FROM locations;');
+      console.log(remaining.map(r=> r.id));
       setLocations((prev) => prev.filter(item => item.key != key))
     }
  
@@ -17,22 +33,21 @@ export default function CustomFlatList({style, locations, setLocations, navigati
 
     function showHidePin(key, val){
       console.log('val: ' + val)
+      console.log(locations.map(l => l.key));
       setLocations(prev => prev.map(item => item.key === key ? {...item, visible: val} : item));
     }
 
     return(
         <View style={[style, styles.view, styles.view_shape]}>
           <Text style={styles.header}>Lista zapisanych lokalizacji</Text>
-        <FlatList //style={styles.list_shape} 
-                  style={[styles.list_shape]}
+        <FlatList style={[styles.list_shape]}
                   data={locations} 
-                  keyExtractor={(item) => item.key }
-                  //ListHeaderComponent={listHeader} 
+                  keyExtractor={(item) => item.key.toString() }
                 renderItem={ ({item}) => (
                     <View style={styles.item}>
                         <View style={styles.text}>
                           <Text style={styles.name}>{item.name}</Text>
-                          <Text style={styles.coordinates}>({item.latitude}, {item.longitude})</Text>
+                          <Text style={styles.coordinates}>lat: {item.latitude}{'\n'}lon: {item.longitude}</Text>
                         </View>
                         <View>
                           <CheckBox desabled={false} style={styles.checkbox} value={item.visible} onValueChange={(val) => showHidePin(item.key, val)}></CheckBox>
@@ -63,42 +78,22 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
     },
     view_shape: {
-      // flexDirection: 'row',
-      // alignContent: 'center',
-      // alignItems: 'center',
-      // elevate: 3,
-      // borderWidth: 1,
-      // borderRadius: 22,
       maxWidth: '95%',
       width: '100%',
       backgroundColor: 'white'
     },
     list_shape: {
-      // flexDirection: 'row',
-      // alignContent: 'center',
-      // alignItems: 'center',
-      // elevate: 3,
-      // borderWidth: 1,
-      // borderRadius: 10,
       maxWidth: '95%',
       width: '100%',
       backgroundColor: 'white'
     },
     item: {
-      // padding: 12,
       borderBottomWidth: 1,
-      // marginBottom: '0.25%',
-      // borderRadius: 12,
       borderColor: '#ccc',
       borderStyle: 'solid',
-      // elevation: 3,
-      //maxWidth: '90%',
-      // marginLeft: '1px',
-      // marginRight: '1px',
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'center'
-    //   height: '15%'
     },
     text: {
       fontSize: 20,
@@ -110,14 +105,10 @@ const styles = StyleSheet.create({
       borderColor: 'lightgray',
       evaluate: 3,
       borderRadius: 12,
-      // backgroundColor: 'lightgray',
-      //alignContent: 'center',
-      //alignItems: 'center',
       flexDirection: 'column',
       padding: 5,
       justifyContent: 'center',
       alignItems: 'center',
-      //height: 50,
       alignContent: 'center',
       shadowColor: '#fff',
       shadowOffset: {
@@ -129,7 +120,6 @@ const styles = StyleSheet.create({
       marginRight: 5
     },  
     icon: {
-      //flex: 1,
       size: 20,
       alignItems: 'right',
       marginRight: '2%',

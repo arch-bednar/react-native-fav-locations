@@ -50,12 +50,12 @@ export default function CustomMapView({style, onPinChange, navigation, locations
             <MapView style={styles.map}
                 onPress={handleMapPress}
             >
-                {currentPin && (<Marker coordinate={currentPin}/>)}
+                {currentPin && (<Marker key='-xxx' pinColor='red' coordinate={currentPin}/>)}
                 {locations.filter(marker => marker.visible === true).map((marker) => (
                     <Marker
                         coordinate={{latitude: marker.latitude, longitude: marker.longitude}}
                         pinColor='green'
-                        key={locations.key}
+                        key={marker.key}
                         visible={marker.visible}
                     ></Marker> 
                 ))}

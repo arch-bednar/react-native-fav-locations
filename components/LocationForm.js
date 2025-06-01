@@ -1,26 +1,22 @@
 import {Text, TextInput, Button, View, StyleSheet, TouchableOpacity } from 'react-native';
 import {useState} from 'react';
-// import DialogEmptyText from './DialogEmptyText';
 import Dialog from 'react-native-dialog';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-export default function LocationForm({style, navigation, locations, setLocations, route}){
+export default function LocationForm({style, navigation, locations, setLocations, route, database}){
 
     const [text, setText] = useState('');
     const [visible, setVisible] = useState(false);
 
     function Zapisz(route){
         let index = 0;
-        console.log(typeof(locations))
-        for (let i = 0; i < locations.length; i++){
-            console.log('key: ' + locations[i].key);
-            if (locations[i].key >= index){
-                index = locations[i].key;
-            }
-        }
-        //console.log(index);
-        index++;
-        setLocations((prev) => [...prev, {key: index, name: text, latitude: route.params.latitude, longitude: route.params.longitude, visible: false}]);
+        const result = database.getFirstSync('SELECT max(id) as maxId FROM locations;');
+        index = (result.maxId ?? -1) + 1;
+        console.log('maxId: ' + result.maxId + ' index: ' + index);
+        console.log('text: ' + text);
+        console.log('Próba INSERT z:', [index, text, route.params.longitude, route.params.latitude]);
+        database.execSync(`INSERT INTO locations (id, name, longitude, latitude) values (${index}, '${text}', ${route.params.longitude}, ${route.params.latitude})`);
+        setLocations((prev) => [...prev, {id: index, key: String(index), name: text, latitude: route.params.latitude, longitude: route.params.longitude, visible: false}]);
     }
     
     function showDialog(){
@@ -45,6 +41,7 @@ export default function LocationForm({style, navigation, locations, setLocations
             <TextInput style={styles.textbox} 
                         placeholder='Nazwa' 
                         onChangeText={setText} 
+                        value={text}
                         text={text}/>
 
             <TouchableOpacity 
@@ -70,7 +67,8 @@ const styles = StyleSheet.create({
     form: {
         flex: 1,
         alignContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        paddingTop: '5%'
     },
     title:{
         fontSize: 30,
