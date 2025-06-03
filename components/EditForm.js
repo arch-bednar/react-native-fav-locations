@@ -5,26 +5,23 @@ import Dialog from 'react-native-dialog';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
 export default function EditForm({style, locations, setLocations, route, navigation, database}){
+    //Formularz edycyjny do edycji podanej lokalizacji na liście
 
     const [text, setText] = useState('');
     const [visible, setVisible] = useState(false);
     
 
     function Zapisz(key){
+        //zapisuje zmianę nazwy pinu: zapis w tablicy locations i update w sqlite
         let array = cloneDeep(locations);
         let v_id = -1;
         console.log('klucz ' + key)
         for (let i = 0; i < array.length; i++){
-            console.log('Array: ' + array[i].key);
-            console.log(key == array[i].key);
             if (key == array[i].key){
                 array[i].name = text;
                 v_id = array[i].id;
-                console.log('Text: ' + text);
-                console.log('ID: ' + v_id);
             }
         }
-        console.log('text ' + text );
         database.execSync(`UPDATE locations SET name = '${text}' WHERE id = ${v_id}`);
         setLocations(array);
 

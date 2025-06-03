@@ -7,33 +7,27 @@ import CheckBox from 'expo-checkbox';
 export default function CustomFlatList({style, locations, setLocations, navigation, database}) {
 
     function deleteFunction(key){    
-
+      //usuwa z tablicy locations i bazy danych rekord z lokalizacją
       let v_id = -1;
       locations.forEach(row => {
         if (row.key === key)
           v_id = row.id
       })
-      console.log(v_id);
-      console.log(typeof v_id);
       try{
         database.execSync(`DELETE FROM locations WHERE id=${v_id}`, null);
       } catch(error){
           console.error('Błąd w transakcji – wykonano rollback:', err);
       }
-
-      const remaining = database.getAllSync('SELECT id FROM locations;');
-      console.log(remaining.map(r=> r.id));
       setLocations((prev) => prev.filter(item => item.key != key))
     }
  
     function editPosition(key){
-      console.log('editposition ' + key)
+      //przechodzi do formularza edycyjnego lokalizacji
       navigation.navigate('EditForm', {klucz: key});
     }
 
     function showHidePin(key, val){
-      console.log('val: ' + val)
-      console.log(locations.map(l => l.key));
+      //w tablicy locations zmienia wartość visible dla rekordu o kluczu 'key'
       setLocations(prev => prev.map(item => item.key === key ? {...item, visible: val} : item));
     }
 

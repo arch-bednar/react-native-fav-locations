@@ -35,10 +35,6 @@ export default function Home({navigation, locations, setLocations, database}) {
   );
 }
 
-function onPress(){
-  alert("xDD");
-}
-
 const styles = StyleSheet.create({
   background: {
     backgroundColor: '#FFF6F1',

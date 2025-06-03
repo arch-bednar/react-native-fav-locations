@@ -9,12 +9,10 @@ export default function LocationForm({style, navigation, locations, setLocations
     const [visible, setVisible] = useState(false);
 
     function Zapisz(route){
+        //zapisujemy nową lokalizację
         let index = 0;
         const result = database.getFirstSync('SELECT max(id) as maxId FROM locations;');
         index = (result.maxId ?? -1) + 1;
-        console.log('maxId: ' + result.maxId + ' index: ' + index);
-        console.log('text: ' + text);
-        console.log('Próba INSERT z:', [index, text, route.params.longitude, route.params.latitude]);
         database.execSync(`INSERT INTO locations (id, name, longitude, latitude) values (${index}, '${text}', ${route.params.longitude}, ${route.params.latitude})`);
         setLocations((prev) => [...prev, {id: index, key: String(index), name: text, latitude: route.params.latitude, longitude: route.params.longitude, visible: false}]);
     }

@@ -20,6 +20,7 @@ export default function App(){
   }, []);
 
   function openDB(){
+    //funkcja do otwarcia bazy danych
     console.log('Database initialization: opening db_locations.db...');
     console.log('Typ opendatabase' + typeof SQLite);
     const db = SQLite.openDatabaseSync('db_locations.db');
@@ -32,16 +33,17 @@ export default function App(){
   }
 
   function createTable(db){
+    //tworzy tablicę
     db.execSync('CREATE TABLE IF NOT EXISTS locations(id INTEGER PRIMARY KEY NOT NULL, name TEXT NOT NULL, longitude REAL, latitude REAL);');
   }
 
   function fetchData(db){
+    //pobiera dane z tabeli do listy 
     const rows = db.getAllSync('SELECT * FROM locations;');
     for (let i = 0; i < rows.length; i++){
       console.log(`row ${i} ` + rows[i]);
       rows[i]['visible'] = false;
       rows[i]['key'] = String(Date.now()) + rows[i].id;
-      console.log(rows[i]);
     }
 
     setLocations(rows);
